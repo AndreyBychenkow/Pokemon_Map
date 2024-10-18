@@ -1,12 +1,12 @@
 import os
-
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/

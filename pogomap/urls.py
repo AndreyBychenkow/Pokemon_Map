@@ -9,7 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.show_all_pokemons, name='mainpage'),
     path('pokemon/<pokemon_id>/', views.show_pokemon, name='pokemon'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:
