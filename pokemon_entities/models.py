@@ -16,3 +16,4 @@ class PokemonEntity(models.Model):
 
     def __str__(self):
         return f"{self.pokemon.title} at ({self.latitude}, {self.longitude})"
+
