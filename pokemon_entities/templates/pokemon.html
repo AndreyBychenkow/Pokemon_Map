@@ -2,25 +2,44 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>{{ pokemon.title_ru }}</title>
+  <title>{{ pokemon.title }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .pokemon-container { display: flex; }
+    .pokemon-image { margin-right: 20px; }
+    .evolution-container { margin-top: 20px; }
+    .evolution-item { display: inline-block; text-align: center; margin-right: 10px; }
+    .evolution-item img { width: 100px; height: 100px; }
+  </style>
 </head>
 <body>
-<h1>{{ pokemon.title_ru }}</h1>
-<h2>English: {{ pokemon.title_en }}</h2>  <!-- Название на английском -->
-<h2>日本語: {{ pokemon.title_ja }}</h2>  <!-- Название на японском -->
-<img src="{{ pokemon.img_url }}" alt="{{ pokemon.title_ru }}">
-<p><strong>Описание:</strong> {{ pokemon.description }}</p>
-<p>Уровень: {{ pokemon.level }}</p>
-<p>Здоровье: {{ pokemon.health }}</p>
-<p>Атака: {{ pokemon.attack }}</p>
-<p>Защита: {{ pokemon.defense }}</p>
-<p>Выносливость: {{ pokemon.stamina }}</p>
-<p>Появился: {{ pokemon.appeared_at }}</p>
-<p>Исчезнет: {{ pokemon.disappeared_at }}</p>
-
-<h2>Карта</h2>
-<div>
-  {{ map|safe }}
+<div class="pokemon-container">
+  <div class="pokemon-image">
+    <img src="{{ pokemon.img_url }}" alt="{{ pokemon.title }}" style="width: 200px; height: 200px;">
+  </div>
+  <div class="pokemon-info">
+    <h1>{{ pokemon.title }}</h1>
+    <p>{{ pokemon.title }} (анг. {{ pokemon.title_en }}, яп. {{ pokemon.title_ja }}) — покемон двойного травяного и ядовитого
+      типа из первого поколения покемонов.
+      {% if pokemon.evolved_from %}
+      Эволюционирует из стартового покемона {{ pokemon.evolved_from.title }} на 16 уровне.
+      {% endif %}
+      {% if pokemon.next_evolution %}
+      Становится {{ pokemon.next_evolution.title }} на {{ pokemon.next_evolution.level }} уровне.
+      {% endif %}
+    </p>
+  </div>
 </div>
+
+{% if pokemon.evolved_from %}
+<div class="evolution-container">
+  <h2>Эволюции покемона</h2>
+  <div class="evolution-item">
+    <img src="{{ pokemon.evolved_from.img }}" alt="{{ pokemon.evolved_from.title }}">
+    <p>{{ pokemon.evolved_from.title }}</p>
+  </div>
+  <p>Из кого эволюционировал</p>
+</div>
+{% endif %}
 </body>
 </html>

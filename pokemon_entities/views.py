@@ -2,6 +2,7 @@ import folium
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import localtime
 
+from .models import Pokemon
 from .models import PokemonEntity
 
 MOSCOW_CENTER = [55.751244, 37.618423]
@@ -60,34 +61,33 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemon_entity = get_object_or_404(PokemonEntity, id=pokemon_id)
-    pokemon = pokemon_entity.pokemon
+    pokemon = get_object_or_404(Pokemon, id=pokemon_id)
 
-    folium_map = folium.Map(location=[pokemon_entity.latitude, pokemon_entity.longitude], zoom_start=12)
+    evolved_from = None
+    if pokemon.evolved_from:
+        evolved_from = {
+            'title': pokemon.evolved_from.title,
+            'img': request.build_absolute_uri(pokemon.evolved_from.image.url) if pokemon.evolved_from.image else None,
+        }
 
-    add_pokemon(
-        folium_map,
-        pokemon_entity.latitude,
-        pokemon_entity.longitude,
-        request.build_absolute_uri(pokemon.image.url) if pokemon.image else None
-    )
+    next_evolution = pokemon.evolutions.first()
+    next_evolution_data = None
+    if next_evolution:
+        next_evolution_data = {
+            'title': next_evolution.title,
+            'level': 32,
+        }
 
     pokemon_data = {
-        'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None,
-        'title_ru': pokemon.title,
+        'title': pokemon.title,
         'title_en': pokemon.title_en,
         'title_ja': pokemon.title_ja,
+        'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None,
         'description': pokemon.description,
-        'level': pokemon_entity.level,
-        'health': pokemon_entity.health,
-        'attack': pokemon_entity.attack,
-        'defense': pokemon_entity.defense,
-        'stamina': pokemon_entity.stamina,
-        'appeared_at': pokemon_entity.appeared_at,
-        'disappeared_at': pokemon_entity.disappeared_at,
+        'evolved_from': evolved_from,
+        'next_evolution': next_evolution_data,
     }
 
     return render(request, 'pokemon.html', context={
-        'map': folium_map._repr_html_(),
         'pokemon': pokemon_data,
     })
