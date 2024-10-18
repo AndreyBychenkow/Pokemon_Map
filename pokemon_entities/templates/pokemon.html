@@ -6,8 +6,10 @@
 </head>
 <body>
 <h1>{{ pokemon.title_ru }}</h1>
+<h2>English: {{ pokemon.title_en }}</h2>  <!-- Название на английском -->
+<h2>日本語: {{ pokemon.title_ja }}</h2>  <!-- Название на японском -->
 <img src="{{ pokemon.img_url }}" alt="{{ pokemon.title_ru }}">
-<p><strong>Описание:</strong> {{ pokemon.description }}</p> <!-- Новая строка для описания -->
+<p><strong>Описание:</strong> {{ pokemon.description }}</p>
 <p>Уровень: {{ pokemon.level }}</p>
 <p>Здоровье: {{ pokemon.health }}</p>
 <p>Атака: {{ pokemon.attack }}</p>

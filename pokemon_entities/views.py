@@ -75,6 +75,8 @@ def show_pokemon(request, pokemon_id):
     pokemon_data = {
         'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None,
         'title_ru': pokemon.title,
+        'title_en': pokemon.title_en,
+        'title_ja': pokemon.title_ja,
         'description': pokemon.description,
         'level': pokemon_entity.level,
         'health': pokemon_entity.health,
