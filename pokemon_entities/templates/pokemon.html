@@ -19,27 +19,32 @@
   </div>
   <div class="pokemon-info">
     <h1>{{ pokemon.title }}</h1>
-    <p>{{ pokemon.title }} (анг. {{ pokemon.title_en }}, яп. {{ pokemon.title_ja }}) — покемон двойного травяного и ядовитого
-      типа из первого поколения покемонов.
-      {% if pokemon.evolved_from %}
-      Эволюционирует из стартового покемона {{ pokemon.evolved_from.title }} на 16 уровне.
-      {% endif %}
-      {% if pokemon.next_evolution %}
-      Становится {{ pokemon.next_evolution.title }} на {{ pokemon.next_evolution.level }} уровне.
-      {% endif %}
-    </p>
+    <p>{{ pokemon.title }} (анг. {{ pokemon.title_en }}, яп. {{ pokemon.title_ja }}) — покемон двойного травяного и ядовитого типа из первого поколения покемонов.</p>
+    {% if pokemon.evolved_from %}
+    <p>Эволюционирует из покемона {{ pokemon.evolved_from.title }} на 16 уровне.</p>
+    {% endif %}
+    {% if pokemon.next_evolution %}
+    <p>Становится {{ pokemon.next_evolution.title }} на {{ pokemon.next_evolution.level }} уровне.</p>
+    {% endif %}
   </div>
 </div>
-
-{% if pokemon.evolved_from %}
 <div class="evolution-container">
   <h2>Эволюции покемона</h2>
-  <div class="evolution-item">
+  {% if pokemon.evolved_from %}
+  <h3>Эволюционировал из:</h3>
+  <a href="{% url 'pokemon' pokemon_id=pokemon.evolved_from.pokemon_id %}">
     <img src="{{ pokemon.evolved_from.img }}" alt="{{ pokemon.evolved_from.title }}">
     <p>{{ pokemon.evolved_from.title }}</p>
-  </div>
-  <p>Из кого эволюционировал</p>
+  </a>
+  {% endif %}
+
+  {% if pokemon.evolves_to %}
+  <h3>Эволюционирует в:</h3>
+  <a href="{% url 'pokemon' pokemon_id=pokemon.evolves_to.pokemon_id %}">
+    <img src="{{ pokemon.evolves_to.img }}" alt="{{ pokemon.evolves_to.title }}">
+    <p>{{ pokemon.evolves_to.title }}</p>
+  </a>
+  {% endif %}
 </div>
-{% endif %}
 </body>
 </html>

@@ -2,8 +2,7 @@ import folium
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import localtime
 
-from .models import Pokemon
-from .models import PokemonEntity
+from .models import Pokemon, PokemonEntity
 
 MOSCOW_CENTER = [55.751244, 37.618423]
 
@@ -31,6 +30,7 @@ def add_pokemon(map_object, latitude, longitude, image_url):
 
 def show_all_pokemons(request):
     now = localtime()
+    list(Pokemon.objects.values_list('id', flat=True))
     active_pokemons = PokemonEntity.objects.filter(
         appeared_at__lte=now,
         disappeared_at__gte=now
@@ -49,7 +49,7 @@ def show_all_pokemons(request):
     pokemons_on_page = []
     for pokemon in active_pokemons:
         pokemons_on_page.append({
-            'pokemon_id': pokemon.id,
+            'pokemon_id': pokemon.pokemon.id,
             'img_url': request.build_absolute_uri(pokemon.pokemon.image.url) if pokemon.pokemon.image else None,
             'title_ru': pokemon.pokemon.title,
         })
@@ -68,14 +68,15 @@ def show_pokemon(request, pokemon_id):
         evolved_from = {
             'title': pokemon.evolved_from.title,
             'img': request.build_absolute_uri(pokemon.evolved_from.image.url) if pokemon.evolved_from.image else None,
+            'pokemon_id': pokemon.evolved_from.id,
         }
 
-    next_evolution = pokemon.evolutions.first()
-    next_evolution_data = None
-    if next_evolution:
-        next_evolution_data = {
-            'title': next_evolution.title,
-            'level': 32,
+    evolves_to = None
+    if pokemon.evolves_to:
+        evolves_to = {
+            'title': pokemon.evolves_to.title,
+            'img': request.build_absolute_uri(pokemon.evolves_to.image.url) if pokemon.evolves_to.image else None,
+            'pokemon_id': pokemon.evolves_to.id,
         }
 
     pokemon_data = {
@@ -85,7 +86,7 @@ def show_pokemon(request, pokemon_id):
         'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None,
         'description': pokemon.description,
         'evolved_from': evolved_from,
-        'next_evolution': next_evolution_data,
+        'evolves_to': evolves_to,
     }
 
     return render(request, 'pokemon.html', context={

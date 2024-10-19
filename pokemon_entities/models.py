@@ -9,20 +9,19 @@ class Pokemon(models.Model):
     description = models.TextField(blank=True, null=True)
     evolved_from = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                                      related_name='evolutions')
+    evolves_to = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='previous_forms')
 
     def __str__(self):
         return self.title
 
 
 class PokemonEntity(models.Model):
-    objects = None
     pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE)
     latitude = models.FloatField()
     longitude = models.FloatField()
-
     appeared_at = models.DateTimeField(null=True, blank=True)
     disappeared_at = models.DateTimeField(null=True, blank=True)
-
     level = models.IntegerField(default=1)
     health = models.IntegerField(default=100)
     attack = models.IntegerField(default=10)
