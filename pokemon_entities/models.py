@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Pokemon(models.Model):
-    title = models.CharField(max_length=200, verbose_name='Название')
+    title = models.CharField(max_length=200, verbose_name='Название', blank=False)
     title_en = models.CharField(max_length=200, blank=True, null=True, verbose_name='Название (англ.)')
     title_ja = models.CharField(max_length=200, blank=True, null=True, verbose_name='Название (яп.)')
     image = models.ImageField(upload_to='pokemon_images/', blank=True, null=True, verbose_name='Изображение')
@@ -17,7 +17,7 @@ class Pokemon(models.Model):
 
 
 class PokemonEntity(models.Model):
-    pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE, verbose_name='Покемон')
+    pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE, verbose_name='Покемон', blank=False)
     latitude = models.FloatField(verbose_name='Широта')
     longitude = models.FloatField(verbose_name='Долгота')
     appeared_at = models.DateTimeField(null=True, blank=True, verbose_name='Появился в')
