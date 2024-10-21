@@ -4,9 +4,9 @@ from .models import Pokemon, PokemonEntity
 
 
 class PokemonAdmin(admin.ModelAdmin):
-    list_display = ('title', 'evolved_from', 'evolves_to')
+    list_display = ('title', 'evolves')
     search_fields = ('title',)
-    list_filter = ('evolved_from', 'evolves_to')
+    list_filter = ('evolves',)
 
 
 admin.site.register(Pokemon, PokemonAdmin)
