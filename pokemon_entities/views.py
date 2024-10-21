@@ -13,6 +13,13 @@ DEFAULT_IMAGE_URL = (
 )
 
 
+def get_image_url(request, pokemon_instance):
+    if pokemon_instance.image:
+        return request.build_absolute_uri(pokemon_instance.image.url)
+    else:
+        DEFAULT_IMAGE_URL
+
+
 def add_pokemon(map_object, latitude, longitude, image_url):
     if image_url:
         icon = folium.features.CustomIcon(image_url, icon_size=(50, 50))
@@ -30,7 +37,6 @@ def add_pokemon(map_object, latitude, longitude, image_url):
 
 def show_all_pokemons(request):
     now = localtime()
-    list(Pokemon.objects.values_list('id', flat=True))
     active_pokemons = PokemonEntity.objects.filter(
         appeared_at__lte=now,
         disappeared_at__gte=now
@@ -38,7 +44,7 @@ def show_all_pokemons(request):
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon in active_pokemons:
-        image_url = request.build_absolute_uri(pokemon.pokemon.image.url) if pokemon.pokemon.image else None
+        image_url = get_image_url(request, pokemon.pokemon)
         add_pokemon(
             folium_map,
             pokemon.latitude,
@@ -50,7 +56,7 @@ def show_all_pokemons(request):
     for pokemon in active_pokemons:
         pokemons_on_page.append({
             'pokemon_id': pokemon.pokemon.id,
-            'img_url': request.build_absolute_uri(pokemon.pokemon.image.url) if pokemon.pokemon.image else None,
+            'img_url': get_image_url(request, pokemon.pokemon),
             'title_ru': pokemon.pokemon.title,
         })
 
@@ -67,7 +73,7 @@ def show_pokemon(request, pokemon_id):
     if pokemon.evolved_from:
         evolved_from = {
             'title': pokemon.evolved_from.title,
-            'img': request.build_absolute_uri(pokemon.evolved_from.image.url) if pokemon.evolved_from.image else None,
+            'img': get_image_url(request, pokemon.evolved_from),
             'pokemon_id': pokemon.evolved_from.id,
         }
 
@@ -75,7 +81,7 @@ def show_pokemon(request, pokemon_id):
     if pokemon.evolves_to:
         evolves_to = {
             'title': pokemon.evolves_to.title,
-            'img': request.build_absolute_uri(pokemon.evolves_to.image.url) if pokemon.evolves_to.image else None,
+            'img': get_image_url(request, pokemon.evolves_to),
             'pokemon_id': pokemon.evolves_to.id,
         }
 
@@ -83,7 +89,7 @@ def show_pokemon(request, pokemon_id):
         'title': pokemon.title,
         'title_en': pokemon.title_en,
         'title_ja': pokemon.title_ja,
-        'img_url': request.build_absolute_uri(pokemon.image.url) if pokemon.image else None,
+        'img_url': get_image_url(request, pokemon),
         'description': pokemon.description,
         'evolved_from': evolved_from,
         'evolves_to': evolves_to,
