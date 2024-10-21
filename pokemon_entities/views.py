@@ -17,7 +17,7 @@ def get_image_url(request, pokemon_instance):
     if pokemon_instance.image:
         return request.build_absolute_uri(pokemon_instance.image.url)
     else:
-        DEFAULT_IMAGE_URL
+        return DEFAULT_IMAGE_URL
 
 
 def add_pokemon(map_object, latitude, longitude, image_url):
@@ -37,49 +37,49 @@ def add_pokemon(map_object, latitude, longitude, image_url):
 
 def show_all_pokemons(request):
     now = localtime()
-    active_pokemons = PokemonEntity.objects.filter(
+    pokemon_entities = PokemonEntity.objects.filter(
         appeared_at__lte=now,
         disappeared_at__gte=now
     )
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for pokemon in active_pokemons:
-        image_url = get_image_url(request, pokemon.pokemon)
+    for pokemon_entity in pokemon_entities:
+        image_url = get_image_url(request, pokemon_entity.pokemon)
         add_pokemon(
             folium_map,
-            pokemon.latitude,
-            pokemon.longitude,
+            pokemon_entity.latitude,
+            pokemon_entity.longitude,
             image_url
         )
 
-    pokemons_on_page = []
-    for pokemon in active_pokemons:
-        pokemons_on_page.append({
-            'pokemon_id': pokemon.pokemon.id,
-            'img_url': get_image_url(request, pokemon.pokemon),
-            'title_ru': pokemon.pokemon.title,
+    pokemon_entities_page = []
+    for pokemon_entity in pokemon_entities:
+        pokemon_entities_page.append({
+            'pokemon_id': pokemon_entity.pokemon.id,
+            'img_url': get_image_url(request, pokemon_entity.pokemon),
+            'title_ru': pokemon_entity.pokemon.title,
         })
 
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
-        'pokemons': pokemons_on_page,
+        'pokemons': pokemon_entities_page,
     })
 
 
 def show_pokemon(request, pokemon_id):
     pokemon = get_object_or_404(Pokemon, id=pokemon_id)
 
-    evolved_from = None
+    evolved_from_entity = None
     if pokemon.evolved_from:
-        evolved_from = {
+        evolved_from_entity = {
             'title': pokemon.evolved_from.title,
             'img': get_image_url(request, pokemon.evolved_from),
             'pokemon_id': pokemon.evolved_from.id,
         }
 
-    evolves_to = None
+    evolves_to_entity = None
     if pokemon.evolves_to:
-        evolves_to = {
+        evolves_to_entity = {
             'title': pokemon.evolves_to.title,
             'img': get_image_url(request, pokemon.evolves_to),
             'pokemon_id': pokemon.evolves_to.id,
@@ -91,8 +91,8 @@ def show_pokemon(request, pokemon_id):
         'title_ja': pokemon.title_ja,
         'img_url': get_image_url(request, pokemon),
         'description': pokemon.description,
-        'evolved_from': evolved_from,
-        'evolves_to': evolves_to,
+        'evolved_from': evolved_from_entity,
+        'evolves_to': evolves_to_entity,
     }
 
     return render(request, 'pokemon.html', context={
