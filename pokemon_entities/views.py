@@ -70,7 +70,7 @@ def show_pokemon(request, pokemon_id):
     pokemon = get_object_or_404(Pokemon, id=pokemon_id)
 
     evolved_from_entity = None
-    if pokemon.evolved_from:
+    if pokemon.evolves:
         evolved_from_entity = {
             'title': pokemon.evolved_from.title,
             'img': get_image_url(request, pokemon.evolved_from),
@@ -78,7 +78,7 @@ def show_pokemon(request, pokemon_id):
         }
 
     evolves_to_entity = None
-    if pokemon.evolves_to:
+    if pokemon.evolves:
         evolves_to_entity = {
             'title': pokemon.evolves_to.title,
             'img': get_image_url(request, pokemon.evolves_to),
