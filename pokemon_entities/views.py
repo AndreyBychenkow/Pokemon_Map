@@ -102,3 +102,4 @@ def show_pokemon(request, pokemon_id):
     return render(request, 'pokemon.html', context={
         'pokemon': pokemon_data,
     })
+
