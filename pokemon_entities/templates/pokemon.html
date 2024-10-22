@@ -20,23 +20,27 @@
   <div class="pokemon-info">
     <h1>{{ pokemon.title }}</h1>
     <p>{{ pokemon.title }} (анг. {{ pokemon.title_en }}, яп. {{ pokemon.title_ja }}) — покемон двойного травяного и ядовитого типа из первого поколения покемонов.</p>
-    {% if pokemon.evolved_from %}
-    <p>Эволюционирует из покемона {{ pokemon.evolved_from.title }} на 16 уровне.</p>
-    {% endif %}
-    {% if pokemon.next_evolution %}
-    <p>Становится {{ pokemon.next_evolution.title }} на {{ pokemon.next_evolution.level }} уровне.</p>
+
+    {% if pokemon.previous_forms %}
+    <h3>Предыдущие формы:</h3>
+    <ul>
+      {% for form in pokemon.previous_forms %}
+      <li>
+        <img src="{{ form.img }}" alt="{{ form.title }}">
+        {{ form.title }}
+      </li>
+      {% empty %}
+      <li>Нет предыдущих форм.</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Это стартовый покемон.</p>
     {% endif %}
   </div>
 </div>
+
 <div class="evolution-container">
   <h2>Эволюции покемона</h2>
-  {% if pokemon.evolved_from %}
-  <h3>Эволюционировал из:</h3>
-  <a href="{% url 'pokemon' pokemon_id=pokemon.evolved_from.pokemon_id %}">
-    <img src="{{ pokemon.evolved_from.img }}" alt="{{ pokemon.evolved_from.title }}">
-    <p>{{ pokemon.evolved_from.title }}</p>
-  </a>
-  {% endif %}
 
   {% if pokemon.evolves_to %}
   <h3>Эволюционирует в:</h3>
@@ -44,6 +48,8 @@
     <img src="{{ pokemon.evolves_to.img }}" alt="{{ pokemon.evolves_to.title }}">
     <p>{{ pokemon.evolves_to.title }}</p>
   </a>
+  {% else %}
+  <p>Нет эволюции.</p>
   {% endif %}
 </div>
 </body>
