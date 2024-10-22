@@ -86,6 +86,8 @@ def show_pokemon(request, pokemon_id):
             'pokemon_id': previous_form.id,
         })
 
+    is_starting_pokemon = not previous_forms.exists()
+
     pokemon_data = {
         'title': pokemon.title,
         'title_en': pokemon.title_en,
@@ -94,6 +96,7 @@ def show_pokemon(request, pokemon_id):
         'description': pokemon.description,
         'evolves_to': evolves_to_entity,
         'previous_forms': previous_forms_data,
+        'is_starting_pokemon': is_starting_pokemon,
     }
 
     return render(request, 'pokemon.html', context={
