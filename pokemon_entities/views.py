@@ -69,24 +69,21 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     pokemon = get_object_or_404(Pokemon, id=pokemon_id)
 
+    evolved_from_entity = None
+    if pokemon.evolves:
+        evolved_from_entity = {
+            'title': pokemon.evolved_from.title,
+            'img': get_image_url(request, pokemon.evolved_from),
+            'pokemon_id': pokemon.evolved_from.id,
+        }
+
     evolves_to_entity = None
     if pokemon.evolves:
         evolves_to_entity = {
-            'title': pokemon.evolves.title,
-            'img': get_image_url(request, pokemon.evolves),
-            'pokemon_id': pokemon.evolves.id,
+            'title': pokemon.evolves_to.title,
+            'img': get_image_url(request, pokemon.evolves_to),
+            'pokemon_id': pokemon.evolves_to.id,
         }
-
-    previous_forms = pokemon.previous_forms.all()
-    previous_forms_data = []
-    for previous_form in previous_forms:
-        previous_forms_data.append({
-            'title': previous_form.title,
-            'img': get_image_url(request, previous_form),
-            'pokemon_id': previous_form.id,
-        })
-
-    is_starting_pokemon = not previous_forms.exists()
 
     pokemon_data = {
         'title': pokemon.title,
@@ -94,12 +91,10 @@ def show_pokemon(request, pokemon_id):
         'title_ja': pokemon.title_ja,
         'img_url': get_image_url(request, pokemon),
         'description': pokemon.description,
+        'evolved_from': evolved_from_entity,
         'evolves_to': evolves_to_entity,
-        'previous_forms': previous_forms_data,
-        'is_starting_pokemon': is_starting_pokemon,
     }
 
     return render(request, 'pokemon.html', context={
         'pokemon': pokemon_data,
     })
-
