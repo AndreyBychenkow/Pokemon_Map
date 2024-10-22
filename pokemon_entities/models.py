@@ -8,7 +8,7 @@ class Pokemon(models.Model):
     image = models.ImageField(upload_to='pokemon_images/', blank=True, null=True, verbose_name='Изображение')
     description = models.TextField(blank=True, null=True, verbose_name='Описание')
     evolves = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
-                                related_name='evolutions', verbose_name='Эволюционирует')
+                                related_name='previous_forms', verbose_name='Эволюционирует в')
 
     def __str__(self):
         return self.title
@@ -28,3 +28,4 @@ class PokemonEntity(models.Model):
 
     def __str__(self):
         return f"{self.pokemon.title} at ({self.latitude}, {self.longitude})"
+
