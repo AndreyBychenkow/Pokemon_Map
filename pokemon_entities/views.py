@@ -72,17 +72,18 @@ def show_pokemon(request, pokemon_id):
     evolved_from_entity = None
     if pokemon.evolves:
         evolved_from_entity = {
-            'title': pokemon.evolved_from.title,
-            'img': get_image_url(request, pokemon.evolved_from),
-            'pokemon_id': pokemon.evolved_from.id,
+            'title': pokemon.evolves.title,
+            'img': get_image_url(request, pokemon.evolves),
+            'pokemon_id': pokemon.evolves.id,
         }
 
     evolves_to_entity = None
+
     if pokemon.evolves:
         evolves_to_entity = {
-            'title': pokemon.evolves_to.title,
-            'img': get_image_url(request, pokemon.evolves_to),
-            'pokemon_id': pokemon.evolves_to.id,
+            'title': pokemon.evolves.title,
+            'img': get_image_url(request, pokemon.evolves),
+            'pokemon_id': pokemon.evolves.id,
         }
 
     pokemon_data = {
